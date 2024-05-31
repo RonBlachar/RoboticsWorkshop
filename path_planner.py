@@ -21,7 +21,9 @@ def compress_map(original_map, k):
     return compressed_map
 
 
-def is_valid_move(map_array, x, y, jeep_height, jeep_width):
+def is_valid_move(map_array, x, y):
+    jeep_height = 1
+    jeep_width = 1
     rows, cols = map_array.shape
     if x < 0 or y < 0 or x + jeep_height > rows or y + jeep_width > cols:
         return False
@@ -69,7 +71,7 @@ def a_star(map_array, start, goal, jeep_size):
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             neighbor = (current[0] + dx, current[1] + dy)
             if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols:
-                if is_valid_move(map_array, neighbor[0], neighbor[1], jeep_size, jeep_size):
+                if is_valid_move(map_array, neighbor[0], neighbor[1]):
                     tentative_g_score = g_score[current] + 1
 
                     if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
@@ -82,8 +84,7 @@ def a_star(map_array, start, goal, jeep_size):
 
 
 def plan_path(birds_eye_img, start, jeep_size):
-    k = jeep_size
-    compressed_map = compress_map(birds_eye_img, k)
+    compressed_map = compress_map(birds_eye_img, jeep_size)
     destinations = find_destinations(compressed_map)
     min_tour = None
     min_tour_length = float('inf')
@@ -94,7 +95,7 @@ def plan_path(birds_eye_img, start, jeep_size):
         current_tour = []
 
         for destination in perm:
-            path = a_star(birds_eye_img, current_start, destination, jeep_size, jeep_size)
+            path = a_star(birds_eye_img, current_start, destination, jeep_size)
             if path is None:
                 break
             tour_length += len(path) - 1
@@ -130,7 +131,6 @@ def path_to_directions(path):
             directions.append('Left')
     return directions
 
-
 '''
 Example usage
 
@@ -151,14 +151,12 @@ print("Compressed Map:")
 print(compressed_map)
 
 start = (0, 0)  # Updated start position to ensure the jeep can start without overlapping obstacles
-jeep_height = 1
-jeep_width = 1
 
 destinations = find_destinations(compressed_map)
 print("Destinations:", destinations)
 
-tour = plan_path(compressed_map, start, destinations, jeep_height, jeep_width)
+tour = plan_path(original_map, start,k)
 directions = path_to_directions(tour)
 print("Tour:", tour)
 print("Directions:", directions)
- '''
+'''
