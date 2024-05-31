@@ -46,7 +46,7 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def a_star(map_array, start, goal, jeep_height, jeep_width):
+def a_star(map_array, start, goal, jeep_size):
     rows, cols = map_array.shape
     open_set = []
     heapq.heappush(open_set, (0, start))
@@ -69,7 +69,7 @@ def a_star(map_array, start, goal, jeep_height, jeep_width):
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             neighbor = (current[0] + dx, current[1] + dy)
             if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols:
-                if is_valid_move(map_array, neighbor[0], neighbor[1], jeep_height, jeep_width):
+                if is_valid_move(map_array, neighbor[0], neighbor[1], jeep_size, jeep_size):
                     tentative_g_score = g_score[current] + 1
 
                     if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
@@ -81,7 +81,10 @@ def a_star(map_array, start, goal, jeep_height, jeep_width):
     return None
 
 
-def plan_path(birds_eye_img, start, destinations, jeep_height, jeep_width):
+def plan_path(birds_eye_img, start, jeep_size):
+    k = jeep_size
+    compressed_map = compress_map(birds_eye_img, k)
+    destinations = find_destinations(compressed_map)
     min_tour = None
     min_tour_length = float('inf')
 
@@ -91,14 +94,14 @@ def plan_path(birds_eye_img, start, destinations, jeep_height, jeep_width):
         current_tour = []
 
         for destination in perm:
-            path = a_star(birds_eye_img, current_start, destination, jeep_height, jeep_width)
+            path = a_star(birds_eye_img, current_start, destination, jeep_size, jeep_size)
             if path is None:
                 break
             tour_length += len(path) - 1
             current_tour.extend(path[:-1])
             current_start = destination
 
-        path_back = a_star(birds_eye_img, current_start, start, jeep_height, jeep_width)
+        path_back = a_star(birds_eye_img, current_start, start, jeep_size)
         if path_back is None:
             continue
 
