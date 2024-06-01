@@ -1,8 +1,8 @@
-from drone_io import get_drone_img
-from jeep_io import send_instructions_to_jeep
-from birds_eye import apply_birds_eye
-from preprocess import get_boundaries, get_destination, get_obstacles
-from path_planner import plan_path
+from drone.drone_io import get_drone_img
+from jeep.jeep_io import send_instructions_to_jeep
+from image_processing.birds_eye import apply_birds_eye
+from image_processing.preprocess import get_boundaries, get_destination, get_obstacles
+from path_planner.path_planner import plan_path
 
 if __name__ == "__main__":
     drone_img = get_drone_img()

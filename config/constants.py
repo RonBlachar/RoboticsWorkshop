@@ -1,0 +1,12 @@
+import numpy as np
+
+BOUNDARIES_LOWER_BOUND = np.array([100, 150, 50])
+BOUNDARIES_UPPER_BOUND = np.array([140, 255, 255])
+
+OBSTACLES_LOWER_BOUND = np.array([0,0,0])
+OBSTACLES_UPPER_BOUND = np.array([179, 255, 50])
+
+DESTINATION_LOWER_BOUND = np.array([90, 50, 50])
+DESTINATION_UPPER_BOUND = np.array([130, 255, 255])
+
+JEEP_SIZE = 2
