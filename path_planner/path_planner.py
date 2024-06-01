@@ -1,6 +1,5 @@
 import numpy as np
 import heapq
-from itertools import permutations
 
 
 def compress_map(map, k):
