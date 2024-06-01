@@ -1,2 +1,6 @@
 /testing_data/
 /dji-drone-env/
+/.idea
+.ipynb_checkpoints
+*.ipynb
+/server/app/images/

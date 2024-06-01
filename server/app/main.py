@@ -12,14 +12,6 @@ from path_planner.path_planner import plan_path
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
-
 
 @app.get("/")
 def hello():
@@ -36,6 +28,7 @@ async def upload_image(img_file: UploadFile = File(...)):
         with open(file_save_path, "wb") as f:
             f.write(img_file.file.read())
 
+        # return {"a": file_save_path}
         direction_array = create_path(file_save_path)
 
 
