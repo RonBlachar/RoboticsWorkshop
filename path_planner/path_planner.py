@@ -1,16 +1,15 @@
 import numpy as np
 import heapq
-from itertools import permutations
 
 
-def compress_map(original_map, k):
-    n = original_map.shape[0]
-    compressed_size = n // k
-    compressed_map = np.zeros((compressed_size, compressed_size), dtype=int)
+def compress_map(map, k):
+    n, m = map.shape
+    compressed_n, compressed_m = n // k, m // k
+    compressed_map = np.zeros((compressed_n, compressed_m), dtype=int)
 
-    for i in range(compressed_size):
-        for j in range(compressed_size):
-            subarray = original_map[i * k:(i + 1) * k, j * k:(j + 1) * k]
+    for i in range(compressed_n):
+        for j in range(compressed_m):
+            subarray = map[i * k:(i + 1) * k, j * k:(j + 1) * k]
             if 2 in subarray:
                 compressed_map[i, j] = 2
             elif 1 in subarray:
@@ -19,19 +18,6 @@ def compress_map(original_map, k):
                 compressed_map[i, j] = 0
 
     return compressed_map
-
-
-def is_valid_move(map_array, x, y):
-    jeep_height = 1
-    jeep_width = 1
-    rows, cols = map_array.shape
-    if x < 0 or y < 0 or x + jeep_height > rows or y + jeep_width > cols:
-        return False
-    for i in range(jeep_height):
-        for j in range(jeep_width):
-            if map_array[x + i, y + j] == 1:
-                return False
-    return True
 
 
 def find_destinations(map_array):
@@ -48,7 +34,7 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def a_star(map_array, start, goal, jeep_size):
+def a_star(map_array, start, goal):
     rows, cols = map_array.shape
     open_set = []
     heapq.heappush(open_set, (0, start))
@@ -71,7 +57,7 @@ def a_star(map_array, start, goal, jeep_size):
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             neighbor = (current[0] + dx, current[1] + dy)
             if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols:
-                if is_valid_move(map_array, neighbor[0], neighbor[1]):
+                if map_array[neighbor[0], neighbor[1]] != 1:
                     tentative_g_score = g_score[current] + 1
 
                     if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
@@ -81,39 +67,6 @@ def a_star(map_array, start, goal, jeep_size):
                         heapq.heappush(open_set, (f_score[neighbor], neighbor))
 
     return None
-
-
-def plan_path(birds_eye_img, start, jeep_size):
-    compressed_map = compress_map(birds_eye_img, jeep_size)
-    destinations = find_destinations(compressed_map)
-    min_tour = None
-    min_tour_length = float('inf')
-
-    for perm in permutations(destinations):
-        tour_length = 0
-        current_start = start
-        current_tour = []
-
-        for destination in perm:
-            path = a_star(birds_eye_img, current_start, destination, jeep_size)
-            if path is None:
-                break
-            tour_length += len(path) - 1
-            current_tour.extend(path[:-1])
-            current_start = destination
-
-        path_back = a_star(birds_eye_img, current_start, start, jeep_size)
-        if path_back is None:
-            continue
-
-        tour_length += len(path_back) - 1
-        current_tour.extend(path_back)
-
-        if tour_length < min_tour_length:
-            min_tour_length = tour_length
-            min_tour = current_tour
-
-    return min_tour
 
 
 def path_to_directions(path):
@@ -131,32 +84,78 @@ def path_to_directions(path):
             directions.append('Left')
     return directions
 
-'''
-Example usage
 
+def plan_path(birds_eye_img, start, jeep_size):
+    compressed_map = compress_map(birds_eye_img, jeep_size)
+    destinations = find_destinations(compressed_map)
+    # Assuming we only have one destination in the map for simplicity.
+    if destinations:
+        goal = destinations[0]
+        path = a_star(compressed_map, start, goal)
+        if path:
+            directions = path_to_directions(path)
+            return directions
+        else:
+            print("No path found.")
+            return
+    else:
+        print("No destinations found.")
+    return
+
+'''
+# Example usage
 original_map = np.array([
     [0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 0, 1, 0, 2, 0],
+    [0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 1, 0, 2, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 0, 0],
+    [1, 1, 0, 0, 1, 1, 0, 0],
     [0, 0, 0, 0, 0, 2, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0]
 ])
 k = 2
-
-compressed_map = compress_map(original_map, k)
+comp_map = compress_map(original_map, k)
 print("Compressed Map:")
-print(compressed_map)
+print(comp_map)
 
-start = (0, 0)  # Updated start position to ensure the jeep can start without overlapping obstacles
-
-destinations = find_destinations(compressed_map)
+start = (0, 0)  # Starting position
+destinations = find_destinations(comp_map)
 print("Destinations:", destinations)
 
-tour = plan_path(original_map, start,k)
-directions = path_to_directions(tour)
-print("Tour:", tour)
-print("Directions:", directions)
+# Assuming we only have one destination in the map for simplicity.
+print(plan_path(original_map, start, 2))
+'''
+
+
+def generate_map(height, width, obstacle_probability=0.01):
+    # Create an array filled with 0s
+    map_array = np.zeros((height, width), dtype=int)
+
+    # Randomly place obstacles (1s) with the given probability
+    obstacle_mask = np.random.rand(height, width) < obstacle_probability
+    map_array[obstacle_mask] = 1
+
+    # Randomly place a single destination (2)
+    while True:
+        dest_x = np.random.randint(0, height)
+        dest_y = np.random.randint(0, width)
+        if map_array[dest_x, dest_y] == 0:  # Ensure it doesn't overwrite an obstacle
+            map_array[dest_x, dest_y] = 2
+            break
+
+    return map_array
+
+
+# Generate the map
+height = 2000
+width = 3000
+map_array = generate_map(height, width)
+map_array[0]=2
+# Print a small portion of the map to verify
+print(map_array[:10, :10])
+
+print(plan_path(map_array,(0,0),2))
 '''
