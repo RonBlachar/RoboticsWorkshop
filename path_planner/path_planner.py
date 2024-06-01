@@ -106,6 +106,8 @@ def plan_path(birds_eye_img, start, jeep_size):
 # Example usage
 original_map = np.array([
     [0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 1, 1, 0, 0],
     [0, 0, 0, 0, 1, 0, 2, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [1, 1, 0, 0, 1, 1, 0, 0],
@@ -125,4 +127,35 @@ print("Destinations:", destinations)
 
 # Assuming we only have one destination in the map for simplicity.
 print(plan_path(original_map, start, 2))
+'''
+
+
+def generate_map(height, width, obstacle_probability=0.01):
+    # Create an array filled with 0s
+    map_array = np.zeros((height, width), dtype=int)
+
+    # Randomly place obstacles (1s) with the given probability
+    obstacle_mask = np.random.rand(height, width) < obstacle_probability
+    map_array[obstacle_mask] = 1
+
+    # Randomly place a single destination (2)
+    while True:
+        dest_x = np.random.randint(0, height)
+        dest_y = np.random.randint(0, width)
+        if map_array[dest_x, dest_y] == 0:  # Ensure it doesn't overwrite an obstacle
+            map_array[dest_x, dest_y] = 2
+            break
+
+    return map_array
+
+
+# Generate the map
+height = 2000
+width = 3000
+map_array = generate_map(height, width)
+map_array[0]=2
+# Print a small portion of the map to verify
+print(map_array[:10, :10])
+
+print(plan_path(map_array,(0,0),2))
 '''
