@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+
 from config.constants import BOUNDARIES_LOWER_BOUND, BOUNDARIES_UPPER_BOUND, OBSTACLES_UPPER_BOUND, \
     OBSTACLES_LOWER_BOUND, DESTINATION_LOWER_BOUND, DESTINATION_UPPER_BOUND
 
@@ -131,6 +132,7 @@ def save_and_display_matrix(matrix, output_image_path):
     # Print the result matrix
     print("Result Matrix:")
     print(matrix)
+
 
 
 if __name__ == "__main__":
