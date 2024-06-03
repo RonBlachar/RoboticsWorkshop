@@ -9,7 +9,6 @@ from config.constants import BOUNDARIES_UPPER_BOUND, BOUNDARIES_LOWER_BOUND, JEE
 from image_processing.birds_eye import apply_birds_eye
 from image_processing.preprocess import find_boundaries, process_image, order_boundaries
 from path_planner.path_planner import plan_path
-
 app = FastAPI()
 
 app.add_middleware(
