@@ -1,20 +1,15 @@
 import os
-import matplotlib.pyplot as plt
-import cv2
-import uvicorn
-from fastapi import FastAPI, UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
 import pickle
 from pathlib import Path
 
-from config.constants import BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2, OBSTACLES_LOWER_BOUND1, OBSTACLES_UPPER_BOUND1, OBSTACLES_LOWER_BOUND2, OBSTACLES_UPPER_BOUND2, DESTINATION_LOWER_BOUND1, DESTINATION_UPPER_BOUND1, DESTINATION_LOWER_BOUND2, DESTINATION_UPPER_BOUND2, JEEP_SIZE
-from image_processing.birds_eye import apply_birds_eye, plot_birds_eye_view, plot_path_on_birds_eye_image
-from image_processing.preprocess import find_boundaries, convert_birds_eye_to_matrix, order_boundaries, plot_img_with_boundaries
+import cv2
+import uvicorn
+from fastapi import FastAPI, UploadFile, File
+
 from config.constants import BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, \
-    BOUNDARIES_UPPER_BOUND2, OBSTACLES_LOWER_BOUND1, OBSTACLES_UPPER_BOUND1, OBSTACLES_LOWER_BOUND2, \
-    OBSTACLES_UPPER_BOUND2, DESTINATION_LOWER_BOUND1, DESTINATION_UPPER_BOUND1, DESTINATION_LOWER_BOUND2, \
-    DESTINATION_UPPER_BOUND2, JEEP_SIZE
+    BOUNDARIES_UPPER_BOUND2, JEEP_SIZE
 from image_processing.birds_eye import apply_birds_eye, plot_birds_eye_view
+from image_processing.birds_eye import plot_path_on_birds_eye_image
 from image_processing.preprocess import find_boundaries, convert_birds_eye_to_matrix, order_boundaries, \
     plot_img_with_boundaries
 from path_planner.path_planner import plan_path
