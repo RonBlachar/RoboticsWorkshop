@@ -10,13 +10,7 @@ def compress_map(map, k):
     for i in range(compressed_n):
         for j in range(compressed_m):
             subarray = map[i * k:(i + 1) * k, j * k:(j + 1) * k]
-            if 2 in subarray:
-                compressed_map[i, j] = 2
-            elif 1 in subarray:
-                compressed_map[i, j] = 1
-            else:
-                compressed_map[i, j] = 0
-
+            compressed_map[i, j] = subarray.max()
     return compressed_map
 
 
@@ -103,6 +97,7 @@ def plan_path(birds_eye_img, start, jeep_size):
         print("No destinations found.")
     return
 
+
 '''
 # Example usage
 original_map = np.array([
@@ -148,7 +143,6 @@ def generate_map(height, width, obstacle_probability=0.01):
             break
 
     return map_array
-
 
 # Generate the map
 # height = 2000

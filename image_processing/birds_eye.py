@@ -69,13 +69,13 @@ def plot_birds_eye_view(birds_eye_img):
 def plot_path_on_birds_eye_image(birds_eye_img, direction_array):
     image_rgb = cv2.cvtColor(birds_eye_img, cv2.COLOR_BGR2RGB)
     # Define the starting point
-    x, y = 0, 0
+    x, y = (0, 0)
 
     # Define the step size (assuming each step corresponds to the size of a tile)
     step_size = JEEP_SIZE  # Adjust this value based on the image scale
 
     # List to store the coordinates of the path
-    path_coordinates = [(x * step_size, y * step_size)]
+    path_coordinates = [((y+1) * step_size, (x+1) * step_size)]
 
     # Calculate the coordinates for the given orders
     for order in direction_array:
@@ -87,16 +87,16 @@ def plot_path_on_birds_eye_image(birds_eye_img, direction_array):
             y -= 1
         elif order == 'Up':
             x -= 1
-        path_coordinates.append((y * step_size, x * step_size))
+        path_coordinates.append(((y+1) * step_size, (x+1) * (step_size+1)))
 
     for coord in path_coordinates:
-        top_left = (coord[0] - int(step_size/2), coord[1] - int(step_size/2))
-        bottom_right = (coord[0] + int(step_size/2), coord[1] + int(step_size/2))
+        top_left = (coord[0] - step_size, coord[1] - step_size)
+        bottom_right = (top_left[0] + step_size, top_left[1] + step_size)
         cv2.rectangle(image_rgb, top_left, bottom_right, color=(0, 255, 0), thickness=-1)
 
     # Display the image with the path
     plt.figure(figsize=(10, 10))
     plt.imshow(image_rgb)
     plt.title('Path Visualization')
-    plt.axis('off')
+    # plt.axis()
     plt.show()
