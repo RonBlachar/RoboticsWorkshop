@@ -56,16 +56,17 @@ def create_path(img_path):
                                  BOUNDARIES_UPPER_BOUND2)
     plot_img_with_boundaries(image, boundaries)  # Plot the original image with the detected boundaries
     ord_boundaries = order_boundaries(boundaries)
+    print(ord_boundaries)
     birds_eye_img = apply_birds_eye(image, ord_boundaries)
     plot_birds_eye_view(birds_eye_img)  # Plot the birds eye image
     categorized_img_matrix = convert_birds_eye_to_matrix(birds_eye_img)
-    overlay_heat_map(birds_eye_img, categorized_img_matrix)
+    #overlay_heat_map(birds_eye_img, categorized_img_matrix)
     direction_array = plan_path(categorized_img_matrix, start=(0, 0), jeep_size=JEEP_SIZE)
-    plot_path_on_birds_eye_image(birds_eye_img, direction_array)
+    #plot_path_on_birds_eye_image(birds_eye_img, direction_array)
     return direction_array
 
 
 if __name__ == "__main__":
     # uvicorn.run(app, host="0.0.0.0", port=8000)
-    path = create_path("/Users/ronblachar/Downloads/WhatsApp Image 2024-06-15 at 14.08.29.jpeg")
+    path = create_path("images/input1.jpeg")
     print("************** End of the process ***************")

@@ -38,17 +38,22 @@ def apply_birds_eye(drone_img: np.array, coordinates):
     height_a = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
     height_b = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
     max_height = max(int(height_a), int(height_b))
-    distance = np.array([
+    # Destination points which will map the image to a bird's-eye view
+    destination = np.array([
         [0, 0],
         [max_width - 1, 0],
         [max_width - 1, max_height - 1],
-        [0, max_width - 1]], dtype="float32")
-    # Compute the perspective transform M
-    M = cv2.getPerspectiveTransform(coordinates, distance)
-    wraped = cv2.warpPerspective(drone_img, M, (max_width, max_height), )
-    # Crop the image to exclude boundary regions
-    margin = 5  # Margin to exclude boundary regions (adjust as needed)
-    cropped = wraped[margin:max_height - margin, margin:max_width - margin]
+        [0, max_height - 1]], dtype="float32")
+
+    # Compute the perspective transform matrix
+    M = cv2.getPerspectiveTransform(np.array(coordinates, dtype="float32"), destination)
+
+    # Apply the perspective transformation
+    wrapped = cv2.warpPerspective(drone_img, M, (max_width, max_height))
+
+    # If needed, crop the image to exclude boundary regions (adjust margin as needed)
+    margin = 0  # Adjust this value as needed
+    cropped = wrapped[margin:max_height - margin, margin:max_width - margin]
 
     return cropped
 
