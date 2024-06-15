@@ -158,4 +158,3 @@ map_array[0]=2
 print(map_array[:10, :10])
 
 print(plan_path(map_array,(0,0),2))
-'''

@@ -1,15 +1,14 @@
 import os
-
+import matplotlib.pyplot as plt
 import cv2
 import uvicorn
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 
-from config.constants import BOUNDARIES_UPPER_BOUND, BOUNDARIES_LOWER_BOUND, JEEP_SIZE
+from config.constants import BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2, JEEP_SIZE
 from image_processing.birds_eye import apply_birds_eye
 from image_processing.preprocess import find_boundaries, process_image, order_boundaries
 from path_planner.path_planner import plan_path
-
 app = FastAPI()
 
 
@@ -33,11 +32,11 @@ async def upload_image(img_file: UploadFile = File(...)):
 
 
 def create_path(img_path):
+    print("*************")
     image = cv2.imread(img_path)
-    boundaries = find_boundaries(image, BOUNDARIES_LOWER_BOUND, BOUNDARIES_UPPER_BOUND)
+    boundaries = find_boundaries(image, BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2)
     boundaries = order_boundaries(boundaries)
     birds_eye_img = apply_birds_eye(image, *boundaries)
-    import matplotlib.pyplot as plt
     plt.imshow(birds_eye_img)
     plt.show()
     categorized_img_matrix = process_image(birds_eye_img)
@@ -47,4 +46,4 @@ def create_path(img_path):
 
 if __name__ == "__main__":
     # uvicorn.run(app)
-    print(create_path('/Users/ronblachar/Downloads/WhatsApp Image 2024-05-31 at 16.15.01.jpeg'))
+    print(create_path('images/input3.jpeg'))
