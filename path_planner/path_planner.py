@@ -87,6 +87,7 @@ def path_to_directions(path):
 
 def plan_path(birds_eye_img, start, jeep_size):
     compressed_map = compress_map(birds_eye_img, jeep_size)
+    print(compressed_map)
     destinations = find_destinations(compressed_map)
     # Assuming we only have one destination in the map for simplicity.
     if destinations:

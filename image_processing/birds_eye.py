@@ -52,7 +52,7 @@ def apply_birds_eye(drone_img: np.array, coordinates):
     wrapped = cv2.warpPerspective(drone_img, M, (max_width, max_height))
 
     # If needed, crop the image to exclude boundary regions (adjust margin as needed)
-    margin = 0  # Adjust this value as needed
+    margin = 15  # Adjust this value as needed
     cropped = wrapped[margin:max_height - margin, margin:max_width - margin]
 
     return cropped

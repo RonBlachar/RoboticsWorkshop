@@ -114,14 +114,14 @@ def convert_birds_eye_to_matrix(image):
     # Create masks for each color range
     obstacles_mask_1 = cv2.inRange(hsv_image, OBSTACLES_LOWER_BOUND1, OBSTACLES_UPPER_BOUND1)
     obstacles_mask_2 = cv2.inRange(hsv_image, OBSTACLES_LOWER_BOUND2, OBSTACLES_UPPER_BOUND2)
-    obstacles_mask = cv2.bitwise_xor(obstacles_mask_1, obstacles_mask_2)
+    obstacles_mask = cv2.bitwise_or(obstacles_mask_1, obstacles_mask_2)
     destination_mask_1 = cv2.inRange(hsv_image, DESTINATION_LOWER_BOUND1, DESTINATION_UPPER_BOUND1)
     destination_mask_2 = cv2.inRange(hsv_image, DESTINATION_LOWER_BOUND2, DESTINATION_UPPER_BOUND2)
-    destination_mask = cv2.bitwise_xor(destination_mask_1, destination_mask_2)
+    destination_mask = cv2.bitwise_or(destination_mask_1, destination_mask_2)
 
     boundaries_mask_1 = cv2.inRange(hsv_image, BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1)
     boundaries_mask_2 = cv2.inRange(hsv_image, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2)
-    boundaries_mask = cv2.bitwise_xor(boundaries_mask_1, boundaries_mask_2)
+    boundaries_mask = cv2.bitwise_or(boundaries_mask_1, boundaries_mask_2)
 
     # Initialize the matrix with zeros (for background)
     matrix = np.zeros(image.shape[:2], dtype=int)
@@ -129,7 +129,7 @@ def convert_birds_eye_to_matrix(image):
     # Set matrix values based on masks
     matrix[obstacles_mask > 0] = 1
     matrix[destination_mask > 0] = 2
-    matrix[boundaries_mask > 0] = 0
+    matrix[boundaries_mask > 0] = 2
     return matrix
 
 
