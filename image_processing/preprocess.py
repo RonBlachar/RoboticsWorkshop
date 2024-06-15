@@ -8,11 +8,6 @@ from config.constants import BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, B
     DESTINATION_UPPER_BOUND1, OBSTACLES_LOWER_BOUND2, OBSTACLES_UPPER_BOUND2, DESTINATION_UPPER_BOUND2, \
     DESTINATION_LOWER_BOUND2
 
-"""def preprocess(image_path):
-    # Load the image
-    image = cv2.imread(image_path)
-    boundaries = find_boundaries(image, BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2)"""
-
 
 def find_boundaries(image, lower_color1, upper_color1, lower_color2, upper_color2) -> List[Tuple[int, int]]:
     """
@@ -61,7 +56,6 @@ def find_boundaries(image, lower_color1, upper_color1, lower_color2, upper_color
 
 def order_boundaries(coordinates):
     coordinates = np.array(coordinates)
-    # return [coordinates[3], coordinates[1], coordinates[0], coordinates[2]]
     rect = np.zeros((4, 2), dtype="float32")
 
     # Sum of points
@@ -128,9 +122,9 @@ def convert_birds_eye_to_matrix(image):
     matrix = np.zeros(image.shape[:2], dtype=int)
 
     # Set matrix values based on masks
-    matrix[obstacles_mask > 0] = 1
-    matrix[destination_mask_1 > 0] = 2
     matrix[boundaries_mask > 0] = 0
+    matrix[obstacles_mask > 0] = 1
+    matrix[destination_mask > 0] = 2
     return matrix
 
 
