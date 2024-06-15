@@ -106,11 +106,12 @@ def convert_birds_eye_to_matrix(image):
     np.ndarray: Matrix with values 0, 1, and 2.
     """
     # # Convert the image to RGB (OpenCV loads images in BGR format)
-    # image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
     #
     # # Convert image to HSV
-    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    hsv_image = image
+    #hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    #hsv_image = image
     # Create masks for each color range
     obstacles_mask_1 = cv2.inRange(hsv_image, OBSTACLES_LOWER_BOUND1, OBSTACLES_UPPER_BOUND1)
     obstacles_mask_2 = cv2.inRange(hsv_image, OBSTACLES_LOWER_BOUND2, OBSTACLES_UPPER_BOUND2)
@@ -128,8 +129,8 @@ def convert_birds_eye_to_matrix(image):
 
     # Set matrix values based on masks
     matrix[obstacles_mask > 0] = 1
-    matrix[destination_mask > 0] = 2
-    matrix[boundaries_mask > 0] = 2
+    matrix[destination_mask_1 > 0] = 2
+    matrix[boundaries_mask > 0] = 0
     return matrix
 
 

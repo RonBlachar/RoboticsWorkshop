@@ -52,7 +52,7 @@ def apply_birds_eye(drone_img: np.array, coordinates):
     wrapped = cv2.warpPerspective(drone_img, M, (max_width, max_height))
 
     # If needed, crop the image to exclude boundary regions (adjust margin as needed)
-    margin = 15  # Adjust this value as needed
+    margin = 0  # Adjust this value as needed
     cropped = wrapped[margin:max_height - margin, margin:max_width - margin]
 
     return cropped
@@ -89,9 +89,10 @@ def plot_path_on_birds_eye_image(birds_eye_img, direction_array):
             x -= 1
         path_coordinates.append((y * step_size, x * step_size))
 
-    # Draw the path on the image
     for coord in path_coordinates:
-        cv2.circle(image_rgb, coord, radius=5, color=(0, 255, 0), thickness=-1)
+        top_left = (coord[0] - int(step_size/2), coord[1] - int(step_size/2))
+        bottom_right = (coord[0] + int(step_size/2), coord[1] + int(step_size/2))
+        cv2.rectangle(image_rgb, top_left, bottom_right, color=(0, 255, 0), thickness=-1)
 
     # Display the image with the path
     plt.figure(figsize=(10, 10))

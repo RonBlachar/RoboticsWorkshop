@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def overlay_heat_map(image, heat_map_matrix, alpha=0.5):
+def overlay_heat_map(image, heat_map_matrix, alpha=1):
     """
     Overlays a heat map on the original HSV image.
 
@@ -19,7 +19,7 @@ def overlay_heat_map(image, heat_map_matrix, alpha=0.5):
     colormap = np.zeros((heat_map_matrix.shape[0], heat_map_matrix.shape[1], 3), dtype=np.uint8)
     colormap[heat_map_matrix == 0] = [0, 0, 255]  # Blue for 0
     colormap[heat_map_matrix == 1] = [0, 255, 0]  # Green for 1
-    colormap[heat_map_matrix == 2] = [255, 192, 203]  # Red for 2
+    colormap[heat_map_matrix == 2] = [255, 0, 0]  # Red for 2
     # Combine the heat map with the original image using transparency
     overlay = cv2.addWeighted(image, 1 - alpha, colormap, alpha, 0)
 
