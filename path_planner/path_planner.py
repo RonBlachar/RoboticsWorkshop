@@ -150,11 +150,11 @@ def generate_map(height, width, obstacle_probability=0.01):
 
 
 # Generate the map
-height = 2000
-width = 3000
-map_array = generate_map(height, width)
-map_array[0]=2
-# Print a small portion of the map to verify
-print(map_array[:10, :10])
+# height = 2000
+# width = 3000
+# map_array = generate_map(height, width)
+# map_array[0]=2
+# # Print a small portion of the map to verify
+# print(map_array[:10, :10])
 
-print(plan_path(map_array,(0,0),2))
+# print(plan_path(map_array,(0,0),2))
