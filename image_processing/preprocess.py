@@ -3,15 +3,15 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-
-from config.constants import BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2, OBSTACLES_UPPER_BOUND1, OBSTACLES_LOWER_BOUND1, DESTINATION_LOWER_BOUND1, DESTINATION_UPPER_BOUND1
-
+from config.constants import BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, \
+    BOUNDARIES_UPPER_BOUND2, OBSTACLES_UPPER_BOUND1, OBSTACLES_LOWER_BOUND1, DESTINATION_LOWER_BOUND1, \
+    DESTINATION_UPPER_BOUND1, OBSTACLES_LOWER_BOUND2, OBSTACLES_UPPER_BOUND2, DESTINATION_UPPER_BOUND2, \
+    DESTINATION_LOWER_BOUND2
 
 """def preprocess(image_path):
     # Load the image
     image = cv2.imread(image_path)
     boundaries = find_boundaries(image, BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2)"""
-
 
 
 def find_boundaries(image, lower_color1, upper_color1, lower_color2, upper_color2) -> List[Tuple[int, int]]:
@@ -61,7 +61,7 @@ def find_boundaries(image, lower_color1, upper_color1, lower_color2, upper_color
 
 def order_boundaries(coordinates):
     coordinates = np.array(coordinates)
-    #return [coordinates[3], coordinates[1], coordinates[0], coordinates[2]]
+    # return [coordinates[3], coordinates[1], coordinates[0], coordinates[2]]
     rect = np.zeros((4, 2), dtype="float32")
 
     # Sum of points
@@ -79,9 +79,9 @@ def order_boundaries(coordinates):
 
 def plot_img_with_boundaries(image, coordinates):
     # Convert the image from BGR to RGB for displaying with matplotlib
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image_with_points = image_rgb.copy()
-    
+    # image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image_with_points = image.copy()
+
     # Draw circles at the specified coordinates
     for (x, y) in coordinates:
         cv2.circle(image_with_points, (x, y), 5, (0, 255, 0), -1)  # Green color
@@ -98,22 +98,30 @@ def convert_birds_eye_to_matrix(image):
     """
     Processes the image to create a matrix with values 0, 1, and 2
     where 0 corresponds to the background, 1 to pink cubes, and 2 to blue cubes.
-    
+
     Args:
     image_path (str): Path to the image file.
-    
+
     Returns:
     np.ndarray: Matrix with values 0, 1, and 2.
     """
-    # Convert the image to RGB (OpenCV loads images in BGR format)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-    # Convert image to HSV
-    hsv_image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-
+    # # Convert the image to RGB (OpenCV loads images in BGR format)
+    # image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
+    #
+    # # Convert image to HSV
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hsv_image = image
     # Create masks for each color range
-    obstacles_mask = cv2.inRange(hsv_image, OBSTACLES_LOWER_BOUND1, OBSTACLES_UPPER_BOUND1)
-    destination_mask = cv2.inRange(hsv_image, DESTINATION_LOWER_BOUND1, DESTINATION_UPPER_BOUND1)
+    obstacles_mask_1 = cv2.inRange(hsv_image, OBSTACLES_LOWER_BOUND1, OBSTACLES_UPPER_BOUND1)
+    obstacles_mask_2 = cv2.inRange(hsv_image, OBSTACLES_LOWER_BOUND2, OBSTACLES_UPPER_BOUND2)
+    obstacles_mask = cv2.bitwise_xor(obstacles_mask_1, obstacles_mask_2)
+    destination_mask_1 = cv2.inRange(hsv_image, DESTINATION_LOWER_BOUND1, DESTINATION_UPPER_BOUND1)
+    destination_mask_2 = cv2.inRange(hsv_image, DESTINATION_LOWER_BOUND2, DESTINATION_UPPER_BOUND2)
+    destination_mask = cv2.bitwise_xor(destination_mask_1, destination_mask_2)
+
+    boundaries_mask_1 = cv2.inRange(hsv_image, BOUNDARIES_LOWER_BOUND1, BOUNDARIES_UPPER_BOUND1)
+    boundaries_mask_2 = cv2.inRange(hsv_image, BOUNDARIES_LOWER_BOUND2, BOUNDARIES_UPPER_BOUND2)
+    boundaries_mask = cv2.bitwise_xor(boundaries_mask_1, boundaries_mask_2)
 
     # Initialize the matrix with zeros (for background)
     matrix = np.zeros(image.shape[:2], dtype=int)
@@ -121,6 +129,7 @@ def convert_birds_eye_to_matrix(image):
     # Set matrix values based on masks
     matrix[obstacles_mask > 0] = 1
     matrix[destination_mask > 0] = 2
+    matrix[boundaries_mask > 0] = 0
     return matrix
 
 
@@ -144,4 +153,3 @@ def save_and_display_matrix(matrix, output_image_path):
     # Print the result matrix
     print("Result Matrix:")
     print(matrix)
-

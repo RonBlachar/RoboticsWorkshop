@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 
+from config.constants import JEEP_SIZE
+
 
 # def apply_birds_eye(drone_img: np.array, pt_a: Tuple[int, int], pt_b: Tuple[int, int], pt_c: Tuple[int, int],
 #                     pt_d: Tuple[int, int]) -> List[Tuple[int, int]]:
@@ -37,24 +39,27 @@ def apply_birds_eye(drone_img: np.array, coordinates):
     height_b = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
     max_height = max(int(height_a), int(height_b))
     distance = np.array([
-        [0,0],
-        [max_width -1, 0],
-        [max_width -1, max_height -1],
-        [0, max_width -1]], dtype = "float32")
+        [0, 0],
+        [max_width - 1, 0],
+        [max_width - 1, max_height - 1],
+        [0, max_width - 1]], dtype="float32")
     # Compute the perspective transform M
     M = cv2.getPerspectiveTransform(coordinates, distance)
-    wraped = cv2.warpPerspective(drone_img, M, (max_width, max_height),)
+    wraped = cv2.warpPerspective(drone_img, M, (max_width, max_height), )
     # Crop the image to exclude boundary regions
     margin = 5  # Margin to exclude boundary regions (adjust as needed)
-    cropped = wraped[margin:max_height-margin, margin:max_width-margin]
+    cropped = wraped[margin:max_height - margin, margin:max_width - margin]
 
     return cropped
 
+
 def plot_birds_eye_view(birds_eye_img):
-    plt.imshow(birds_eye_img)
+    image_rgb = cv2.cvtColor(birds_eye_img, cv2.COLOR_BGR2RGB)
+    plt.imshow(image_rgb)
     plt.title("Bird's-Eye View")
     plt.axis('off')
     plt.show()
+
 
 def plot_path_on_birds_eye_image(birds_eye_img, direction_array):
     image_rgb = cv2.cvtColor(birds_eye_img, cv2.COLOR_BGR2RGB)
@@ -62,7 +67,7 @@ def plot_path_on_birds_eye_image(birds_eye_img, direction_array):
     x, y = 0, 0
 
     # Define the step size (assuming each step corresponds to the size of a tile)
-    step_size = 60  # Adjust this value based on the image scale
+    step_size = JEEP_SIZE  # Adjust this value based on the image scale
 
     # List to store the coordinates of the path
     path_coordinates = [(x * step_size, y * step_size)]
