@@ -6,12 +6,23 @@ def compress_map(map, k):
     n, m = map.shape
     compressed_n, compressed_m = n // k, m // k
     compressed_map = np.zeros((compressed_n, compressed_m), dtype=int)
-
     for i in range(compressed_n):
         for j in range(compressed_m):
             subarray = map[i * k:(i + 1) * k, j * k:(j + 1) * k]
             compressed_map[i, j] = subarray.max()
     return compressed_map
+
+
+def compress_map_by_ratio(curr_map, ratio1, ratio2):  # jeep size divided by map length = ratio
+    n, m = curr_map.shape
+    compressed_n, compressed_m = int(1 // ratio1) + 1, int(1 // ratio2) + 1
+    compressed_map = np.zeros((compressed_n, compressed_m), dtype=int)
+    k = int(0.9 * n * ratio1)
+    for i in range(compressed_n):
+        for j in range(compressed_m):
+            subarray = curr_map[i * k:(i + 1) * k, j * k:(j + 1) * k]
+            compressed_map[i, j] = subarray.max()
+    return compressed_map, k
 
 
 def find_destinations(map_array):
@@ -79,8 +90,8 @@ def path_to_directions(path):
     return directions
 
 
-def plan_path(birds_eye_img, start, jeep_size):
-    compressed_map = compress_map(birds_eye_img, jeep_size)
+def plan_path(birds_eye_img, start):
+    compressed_map, step_size = compress_map_by_ratio(birds_eye_img, 35 / 120, 35 / 180)
     print(compressed_map)
     destinations = find_destinations(compressed_map)
     # Assuming we only have one destination in the map for simplicity.
@@ -89,7 +100,7 @@ def plan_path(birds_eye_img, start, jeep_size):
         path = a_star(compressed_map, start, goal)
         if path:
             directions = path_to_directions(path)
-            return directions
+            return directions, step_size
         else:
             print("No path found.")
             return

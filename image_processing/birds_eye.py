@@ -46,13 +46,13 @@ def plot_birds_eye_view(birds_eye_img):
     plt.show()
 
 
-def plot_path_on_birds_eye_image(birds_eye_img, direction_array):
+def plot_path_on_birds_eye_image(birds_eye_img, direction_array, step_size):
     image_rgb = cv2.cvtColor(birds_eye_img, cv2.COLOR_BGR2RGB)
     # Define the starting point
     x, y = (0, 0)
 
     # Define the step size (assuming each step corresponds to the size of a tile)
-    step_size = JEEP_SIZE  # Adjust this value based on the image scale
+    # step_size = JEEP_SIZE  # Adjust this value based on the image scale
 
     # List to store the coordinates of the path
     path_coordinates = [((y+1) * step_size, (x+1) * step_size)]

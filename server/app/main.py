@@ -60,8 +60,8 @@ def create_path(img_path):
     plot_birds_eye_view(birds_eye_img)  # Plot the birds eye image
     categorized_img_matrix = convert_birds_eye_to_matrix(birds_eye_img)
     overlay_heat_map(birds_eye_img, categorized_img_matrix)
-    direction_array = plan_path(categorized_img_matrix, start=(0, 0), jeep_size=JEEP_SIZE)
-    plot_path_on_birds_eye_image(birds_eye_img, direction_array)
+    direction_array, step_size = plan_path(categorized_img_matrix, start=(0, 0))
+    plot_path_on_birds_eye_image(birds_eye_img, direction_array, step_size=step_size)
     return direction_array
 
 
