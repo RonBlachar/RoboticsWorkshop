@@ -1,12 +1,8 @@
 from typing import Any, Dict
 import requests
 from time import sleep
-import cv2
 import numpy as np
 from PIL import Image
-
-from jeep.jeep_io import wrapper
-from server.app.main import create_path
 
 
 class DJIControlClient:
@@ -113,22 +109,3 @@ class DJIControlClient:
 
         # Save the image
         image.save(output_filename)
-
-
-drone = DJIControlClient("172.20.10.6", 8080)
-drone.enable()
-drone.startcamerastream()
-drone.takeOff()
-drone.rotatecamera(90)
-sleep(3)
-drone.moveup(40, 3.5)
-sleep(2)
-pic = drone.photo()
-sleep(1)
-drone.land()
-drone.disable()
-path = create_path('photo.png')
-print(path)
-sleep(2)
-wrapper(path)
-

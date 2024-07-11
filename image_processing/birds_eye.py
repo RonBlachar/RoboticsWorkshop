@@ -1,9 +1,6 @@
-from typing import Tuple, List
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
-
-from config.constants import JEEP_SIZE
 
 
 def apply_birds_eye(drone_img: np.array, coordinates):
@@ -24,17 +21,13 @@ def apply_birds_eye(drone_img: np.array, coordinates):
         [max_width - 1, 0],
         [max_width - 1, max_height - 1],
         [0, max_height - 1]], dtype="float32")
-
     # Compute the perspective transform matrix
     M = cv2.getPerspectiveTransform(np.array(coordinates, dtype="float32"), destination)
-
     # Apply the perspective transformation
     wrapped = cv2.warpPerspective(drone_img, M, (max_width, max_height))
-
     # If needed, crop the image to exclude boundary regions (adjust margin as needed)
     margin = 0  # Adjust this value as needed
     cropped = wrapped[margin:max_height - margin, margin:max_width - margin]
-
     return cropped
 
 
@@ -42,22 +35,14 @@ def plot_birds_eye_view(birds_eye_img):
     image_rgb = cv2.cvtColor(birds_eye_img, cv2.COLOR_BGR2RGB)
     plt.imshow(image_rgb)
     plt.title("Bird's-Eye View")
-    plt.axis('off')
+    plt.axis()
     plt.show()
 
 
 def plot_path_on_birds_eye_image(birds_eye_img, direction_array, step_size):
     image_rgb = cv2.cvtColor(birds_eye_img, cv2.COLOR_BGR2RGB)
-    # Define the starting point
     x, y = (0, 0)
-
-    # Define the step size (assuming each step corresponds to the size of a tile)
-    # step_size = JEEP_SIZE  # Adjust this value based on the image scale
-
-    # List to store the coordinates of the path
-    path_coordinates = [((y+1) * step_size, (x+1) * step_size)]
-
-    # Calculate the coordinates for the given orders
+    path_coordinates = [((y + 1) * step_size, (x + 1) * step_size)]
     for order in direction_array:
         if order == 'Right':
             y += 1
@@ -67,16 +52,14 @@ def plot_path_on_birds_eye_image(birds_eye_img, direction_array, step_size):
             y -= 1
         elif order == 'Up':
             x -= 1
-        path_coordinates.append(((y+1) * step_size, (x+1) * (step_size+1)))
-
+        path_coordinates.append(((y + 1) * step_size, (x + 1) * (step_size + 1)))
     for coord in path_coordinates:
         top_left = (coord[0] - step_size, coord[1] - step_size)
         bottom_right = (top_left[0] + step_size, top_left[1] + step_size)
         cv2.rectangle(image_rgb, top_left, bottom_right, color=(0, 255, 0), thickness=-1)
-
     # Display the image with the path
     plt.figure(figsize=(10, 10))
     plt.imshow(image_rgb)
     plt.title('Path Visualization')
-    # plt.axis()
+    plt.axis()
     plt.show()
