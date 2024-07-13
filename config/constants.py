@@ -1,6 +1,7 @@
 import numpy as np
 
-# To remember - the color ranges are according to hsv (not rgb)
+# PAY ATTENTION!
+# the color ranges are according to hsv (not rgb).
 # For example - for something that is blue at the original image, we will use the blue hsv range
 
 # Red color
@@ -20,6 +21,10 @@ DESTINATION_LOWER_BOUND1 = np.array([90, 50, 50])
 DESTINATION_UPPER_BOUND1 = np.array([130, 255, 255])
 DESTINATION_LOWER_BOUND2 = np.array([100, 100, 100])
 DESTINATION_UPPER_BOUND2 = np.array([140, 255, 255])
+
+MIN_CONTOUR_AREA = 100
+
+BIRDS_EYE_MARGIN = 0
 
 JEEP_HEIGHT = 35
 JEEP_WIDTH = 24
