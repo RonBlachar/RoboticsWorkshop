@@ -69,8 +69,9 @@ class DroneController:
 
     def capture_and_save_rgba_image(self, save_to_path) -> Dict[str, Any]:
         camera_stream = self.camerastream()
-        image = camera_stream["state"]
         print("Image Captured")
+        sleep(5)
+        image = camera_stream["state"]
         for i in range(len(image)):
             if image[i] < 0:
                 image[i] += 256
