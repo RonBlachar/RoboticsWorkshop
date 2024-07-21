@@ -29,6 +29,3 @@ if __name__ == "__main__":
     jeep = JeepController()
     jeep.move_jeep_by_directions(navigation_directions,
                                  start_move_x=-1.2)  # Initially moves jeep 1.2 meters to enter the navigation area
-
-
-
